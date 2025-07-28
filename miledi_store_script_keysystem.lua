@@ -1,118 +1,126 @@
--- Ключ
+--== Ключ ==
 local correctKey = "Playerok MILEDI STORE"
 
 local function checkKey(input)
-	return input == correctKey
+    return input == correctKey
 end
 
--- Создание интерфейса
-local player = game.Players.LocalPlayer
-local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-gui.Name = "PlayerokKeyUI"
-gui.ResetOnSpawn = false
+--== UI ==
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local StarterGui = game:GetService("StarterGui")
+local LocalPlayer = Players.LocalPlayer
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 420, 0, 320)
-frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
-frame.BorderSizePixel = 0
-frame.Parent = gui
-frame.Active = true
-frame.Draggable = true -- Только для ПК
+local ScreenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+ScreenGui.Name = "PlayerokKeyUI"
 
--- Заголовок
-local title = Instance.new("TextLabel", frame)
-title.Text = "Playerok"
-title.Font = Enum.Font.GothamBold
-title.TextSize = 42
-title.Size = UDim2.new(1, 0, 0, 60)
-title.BackgroundTransparency = 1
-title.TextColor3 = Color3.fromRGB(44, 181, 230)
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 420, 0, 280)
+Frame.Position = UDim2.new(0.5, -210, 0.5, -140)
+Frame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+Frame.BorderSizePixel = 0
+Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+Frame.Parent = ScreenGui
+Frame.Active = true
+Frame.Draggable = true
 
--- Описание
-local desc = Instance.new("TextLabel", frame)
-desc.Text = "Введите ключ от MILEDI STORE:"
-desc.Font = Enum.Font.Gotham
-desc.TextSize = 20
-desc.Size = UDim2.new(1, -40, 0, 40)
-desc.Position = UDim2.new(0, 20, 0, 70)
-desc.TextColor3 = Color3.fromRGB(180, 220, 240)
-desc.BackgroundTransparency = 1
-desc.TextWrapped = true
-desc.TextXAlignment = Enum.TextXAlignment.Left
+local Logo = Instance.new("TextLabel", Frame)
+Logo.Text = "Playerok"
+Logo.Size = UDim2.new(1, 0, 0, 60)
+Logo.Position = UDim2.new(0, 0, 0, 10)
+Logo.Font = Enum.Font.GothamBold
+Logo.TextSize = 44
+Logo.TextColor3 = Color3.fromRGB(44, 181, 230)
+Logo.BackgroundTransparency = 1
 
--- Поле ввода
-local input = Instance.new("TextBox", frame)
-input.PlaceholderText = "Введите ключ..."
-input.Font = Enum.Font.Gotham
-input.TextSize = 20
-input.Size = UDim2.new(1, -40, 0, 45)
-input.Position = UDim2.new(0, 20, 0, 120)
-input.TextColor3 = Color3.fromRGB(255, 255, 255)
-input.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
-input.BorderSizePixel = 0
-input.ClearTextOnFocus = false
+local Desc = Instance.new("TextLabel", Frame)
+Desc.Text = "Введите ключ от MILEDI STORE:"
+Desc.Size = UDim2.new(1, -40, 0, 40)
+Desc.Position = UDim2.new(0, 20, 0, 70)
+Desc.Font = Enum.Font.Gotham
+Desc.TextSize = 20
+Desc.TextWrapped = true
+Desc.TextColor3 = Color3.fromRGB(170, 200, 220)
+Desc.BackgroundTransparency = 1
+Desc.TextXAlignment = Enum.TextXAlignment.Left
 
--- Кнопка подтверждения ключа
-local button = Instance.new("TextButton", frame)
-button.Text = "Подтвердить ключ"
-button.Font = Enum.Font.GothamBold
-button.TextSize = 22
-button.Size = UDim2.new(1, -40, 0, 45)
-button.Position = UDim2.new(0, 20, 0, 180)
-button.BackgroundColor3 = Color3.fromRGB(44, 181, 230)
-button.TextColor3 = Color3.fromRGB(255, 255, 255)
-button.BorderSizePixel = 0
+local Input = Instance.new("TextBox", Frame)
+Input.PlaceholderText = "Введите ключ здесь..."
+Input.Size = UDim2.new(1, -40, 0, 45)
+Input.Position = UDim2.new(0, 20, 0, 120)
+Input.Font = Enum.Font.Gotham
+Input.TextSize = 20
+Input.TextColor3 = Color3.fromRGB(220, 220, 255)
+Input.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
+Input.BorderSizePixel = 0
+Input.ClearTextOnFocus = false
 
--- Сообщение об ошибке
-local errorLabel = Instance.new("TextLabel", frame)
-errorLabel.Text = ""
-errorLabel.Font = Enum.Font.Gotham
-errorLabel.TextSize = 16
-errorLabel.Size = UDim2.new(1, -40, 0, 50)
-errorLabel.Position = UDim2.new(0, 20, 0, 230)
-errorLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
-errorLabel.BackgroundTransparency = 1
-errorLabel.TextWrapped = true
-errorLabel.TextXAlignment = Enum.TextXAlignment.Left
+local ConfirmButton = Instance.new("TextButton", Frame)
+ConfirmButton.Text = "Подтвердить ключ"
+ConfirmButton.Size = UDim2.new(1, -40, 0, 45)
+ConfirmButton.Position = UDim2.new(0, 20, 0, 180)
+ConfirmButton.Font = Enum.Font.GothamBold
+ConfirmButton.TextSize = 22
+ConfirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ConfirmButton.BackgroundColor3 = Color3.fromRGB(44, 181, 230)
+ConfirmButton.BorderSizePixel = 0
 
--- Кнопка "Получить ключ"
-local getKeyButton = Instance.new("TextButton", frame)
-getKeyButton.Text = "Получить ключ"
-getKeyButton.Font = Enum.Font.GothamBold
-getKeyButton.TextSize = 20
-getKeyButton.Size = UDim2.new(0, 180, 0, 35)
-getKeyButton.Position = UDim2.new(0, 20, 0, 280)
-getKeyButton.BackgroundColor3 = Color3.fromRGB(60, 180, 120)
-getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-getKeyButton.BorderSizePixel = 0
+local GetKeyButton = Instance.new("TextButton", Frame)
+GetKeyButton.Text = "Получить ключ"
+GetKeyButton.Size = UDim2.new(0, 160, 0, 30)
+GetKeyButton.Position = UDim2.new(0, 20, 0, 230)
+GetKeyButton.Font = Enum.Font.Gotham
+GetKeyButton.TextSize = 16
+GetKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+GetKeyButton.BackgroundColor3 = Color3.fromRGB(60, 130, 180)
+GetKeyButton.BorderSizePixel = 0
 
--- Подпись «Скопировалась»
-local copiedLabel = Instance.new("TextLabel", frame)
-copiedLabel.Text = ""
-copiedLabel.Font = Enum.Font.Gotham
-copiedLabel.TextSize = 16
-copiedLabel.Size = UDim2.new(0, 200, 0, 30)
-copiedLabel.Position = UDim2.new(0, 210, 0, 280)
-copiedLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
-copiedLabel.BackgroundTransparency = 1
-copiedLabel.TextXAlignment = Enum.TextXAlignment.Left
+local CopiedLabel = Instance.new("TextLabel", Frame)
+CopiedLabel.Text = ""
+CopiedLabel.Size = UDim2.new(0, 200, 0, 30)
+CopiedLabel.Position = UDim2.new(0, 190, 0, 230)
+CopiedLabel.Font = Enum.Font.Gotham
+CopiedLabel.TextSize = 14
+CopiedLabel.TextColor3 = Color3.fromRGB(120, 255, 120)
+CopiedLabel.BackgroundTransparency = 1
+CopiedLabel.TextXAlignment = Enum.TextXAlignment.Left
 
--- Проверка ключа
-button.MouseButton1Click:Connect(function()
-	if checkKey(input.Text) then
-		gui:Destroy()
-		-- Запуск скриптов:
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/furqwk/dip/refs/heads/main/most.lua"))()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/spawnerscript/MurderMystery2/refs/heads/main/farmcoin.lua"))()
-	else
-		errorLabel.Text = "❌ Неверный ключ\nНажмите кнопку получить ключ и у вас скопировалась ссылка,\nзайдите в гугл и вставьте её в поисковую строку 🧞‍♀️"
-	end
+local ErrorLabel = Instance.new("TextLabel", Frame)
+ErrorLabel.Text = ""
+ErrorLabel.Size = UDim2.new(1, -40, 0, 30)
+ErrorLabel.Position = UDim2.new(0, 20, 0, 260)
+ErrorLabel.Font = Enum.Font.Gotham
+ErrorLabel.TextSize = 15
+ErrorLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+ErrorLabel.BackgroundTransparency = 1
+ErrorLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local HintLabel = Instance.new("TextLabel", Frame)
+HintLabel.Text = "🧞‍♀️ Нажмите «Получить ключ», ссылка скопируется. Вставьте в Google 🌐"
+HintLabel.Size = UDim2.new(0, 360, 0, 25)
+HintLabel.Position = UDim2.new(1, -370, 1, -30)
+HintLabel.Font = Enum.Font.Gotham
+HintLabel.TextSize = 13
+HintLabel.TextColor3 = Color3.fromRGB(180, 200, 220)
+HintLabel.BackgroundTransparency = 1
+HintLabel.TextXAlignment = Enum.TextXAlignment.Right
+HintLabel.TextWrapped = true
+
+--== Логика ==
+
+ConfirmButton.MouseButton1Click:Connect(function()
+    if checkKey(Input.Text) then
+        ScreenGui:Destroy()
+
+        -- ЗАПУСК ТВОИХ СКРИПТОВ ПОСЛЕ ПРАВИЛЬНОГО КЛЮЧА
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/furqwk/dip/refs/heads/main/most.lua"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/spawnerscript/MurderMystery2/refs/heads/main/farmcoin.lua"))()
+    else
+        ErrorLabel.Text = "Нажмите «Получить ключ» и вставьте ссылку в Google 🧞‍♀️"
+    end
 end)
 
--- Получение ключа (копирование ссылки)
-getKeyButton.MouseButton1Click:Connect(function()
-	setclipboard("https://playerok.com/profile/MILEDI-STORE/products")
-	copiedLabel.Text = "Скопировалась ссылка!"
+GetKeyButton.MouseButton1Click:Connect(function()
+    setclipboard("https://playerok.com/profile/MILEDI-STORE/products")
+    CopiedLabel.Text = "Ссылка скопирована!"
 end)
