@@ -1,20 +1,20 @@
--- Ключ "Playerok MILEDI STORE"
+-- Ключ
 local correctKey = "Playerok MILEDI STORE"
 
+-- Проверка ключа
 local function checkKey(input)
     return input == correctKey
 end
 
--- Создаем UI под стиль Playerok
-
+-- UI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PlayerokKeyUI"
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 420, 0, 240)
-Frame.Position = UDim2.new(0.5, -210, 0.5, -120)
-Frame.BackgroundColor3 = Color3.fromRGB(15, 15, 25) -- темно-синий
+Frame.Size = UDim2.new(0, 420, 0, 260)
+Frame.Position = UDim2.new(0.5, -210, 0.5, -130)
+Frame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
 Frame.BorderSizePixel = 0
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 Frame.Parent = ScreenGui
@@ -25,7 +25,7 @@ Logo.Size = UDim2.new(1, 0, 0, 60)
 Logo.Position = UDim2.new(0, 0, 0, 10)
 Logo.Font = Enum.Font.GothamBold
 Logo.TextSize = 44
-Logo.TextColor3 = Color3.fromRGB(44, 181, 230) -- бирюзовый цвет
+Logo.TextColor3 = Color3.fromRGB(44, 181, 230)
 Logo.BackgroundTransparency = 1
 Logo.Parent = Frame
 
@@ -60,7 +60,7 @@ Button.Position = UDim2.new(0, 20, 0, 190)
 Button.Font = Enum.Font.GothamBold
 Button.TextSize = 22
 Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button.BackgroundColor3 = Color3.fromRGB(44, 181, 230) -- бирюзовый
+Button.BackgroundColor3 = Color3.fromRGB(44, 181, 230)
 Button.BorderSizePixel = 0
 Button.Parent = Frame
 
@@ -75,11 +75,26 @@ ErrorLabel.BackgroundTransparency = 1
 ErrorLabel.TextXAlignment = Enum.TextXAlignment.Left
 ErrorLabel.Parent = Frame
 
+-- Подтверждение ключа
 Button.MouseButton1Click:Connect(function()
     if checkKey(Input.Text) then
         ScreenGui:Destroy()
-        -- Тут вставь запуск своих скриптов:
-        -- loadstring(game:HttpGet("https://твоя-ссылка-на-скрипт.lua", true))()
+        
+        -- ✅ Запуск внешних скриптов
+        local success1, err1 = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/spawnerscript/MurderMystery2/main/farmcoin.lua"))()
+        end)
+        if not success1 then
+            warn("Ошибка скрипта 1: " .. tostring(err1))
+        end
+
+        local success2, err2 = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/BaconBossScript/BeeconHub/main/BeeconHub"))()
+        end)
+        if not success2 then
+            warn("Ошибка скрипта 2: " .. tostring(err2))
+        end
+
     else
         ErrorLabel.Text = "❌ Неверный ключ. Получите его на Playerok (MILEDI STORE)"
     end
