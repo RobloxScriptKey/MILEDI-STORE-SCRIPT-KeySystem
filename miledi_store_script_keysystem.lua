@@ -1,5 +1,5 @@
--- Скрытый ключ в байтах
-local encodedKey = {80,108,97,121,101,114,111,107,32,77,73,76,69,68,73,32,83,84,79,82,69} -- "Playerok MILEDI STORE"
+-- Скрытый ключ "Playerok MILEDI STORE"
+local encodedKey = {80,108,97,121,101,114,111,107,32,77,73,76,69,68,73,32,83,84,79,82,69}
 
 local function checkKey(input)
     if #input ~= #encodedKey then return false end
@@ -11,19 +11,19 @@ local function checkKey(input)
     return true
 end
 
--- Скрытые URL скриптов (байты)
+-- Скрытые URL скриптов
 local script1_bytes = {104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,115,112,97,119,110,101,114,115,99,114,105,112,116,47,77,117,114,100,101,114,77,121,115,116,101,114,121,50,47,114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,102,97,114,109,99,111,105,110,46,108,117,97}
 local script2_bytes = {104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,66,97,99,111,110,66,111,115,115,83,99,114,105,112,116,47,66,101,101,99,111,110,72,117,98,47,109,97,105,110,47,66,101,101,99,111,110,72,117,98}
 
 local function decode(bytes)
-    local chars = {}
+    local s = {}
     for _, b in ipairs(bytes) do
-        table.insert(chars, string.char(b))
+        table.insert(s, string.char(b))
     end
-    return table.concat(chars)
+    return table.concat(s)
 end
 
--- Создаём UI
+-- Создаем UI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PlayerokKeyUI"
 ScreenGui.Parent = game.CoreGui
@@ -91,24 +91,20 @@ ErrorLabel.BackgroundTransparency = 1
 ErrorLabel.TextXAlignment = Enum.TextXAlignment.Left
 ErrorLabel.Parent = Frame
 
--- Обработка кнопки
 Button.MouseButton1Click:Connect(function()
-    local userKey = Input.Text
-    if checkKey(userKey) then
-        -- Правильный ключ — удаляем UI
+    if checkKey(Input.Text) then
         ScreenGui:Destroy()
-        -- Загружаем и запускаем скрипты из скрытых URL
         local success1, err1 = pcall(function()
             loadstring(game:HttpGet(decode(script1_bytes), true))()
         end)
+        if not success1 then
+            warn("Ошибка загрузки скрипта 1: " .. tostring(err1))
+        end
         local success2, err2 = pcall(function()
             loadstring(game:HttpGet(decode(script2_bytes), true))()
         end)
-        if not success1 then
-            warn("Ошибка загрузки первого скрипта: "..tostring(err1))
-        end
         if not success2 then
-            warn("Ошибка загрузки второго скрипта: "..tostring(err2))
+            warn("Ошибка загрузки скрипта 2: " .. tostring(err2))
         end
     else
         ErrorLabel.Text = "❌ Неверный ключ. Получите его на Playerok (MILEDI STORE)"
