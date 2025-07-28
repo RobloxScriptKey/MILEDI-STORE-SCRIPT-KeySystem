@@ -17,7 +17,7 @@ Frame.BorderSizePixel = 0
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 Frame.Parent = ScreenGui
 Frame.Active = true
-Frame.Draggable = true -- Чтобы можно было двигать на ПК
+Frame.Draggable = true -- Можно перетаскивать (на ПК)
 
 -- Логотип
 local Logo = Instance.new("TextLabel")
@@ -68,43 +68,17 @@ Button.BackgroundColor3 = Color3.fromRGB(44, 181, 230)
 Button.BorderSizePixel = 0
 Button.Parent = Frame
 
--- Кнопка получить ключ
-local CopyButton = Instance.new("TextButton")
-CopyButton.Text = "Получить ключ"
-CopyButton.Size = UDim2.new(0, 140, 0, 30)
-CopyButton.Position = UDim2.new(0, 20, 1, -40)
-CopyButton.Font = Enum.Font.GothamBold
-CopyButton.TextSize = 18
-CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CopyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 120)
-CopyButton.BorderSizePixel = 0
-CopyButton.Parent = Frame
-
--- Текст рядом с кнопкой копирования
-local CopyInfo = Instance.new("TextLabel")
-CopyInfo.Text = ""
-CopyInfo.Size = UDim2.new(1, -170, 0, 30)
-CopyInfo.Position = UDim2.new(0, 170, 1, -40)
-CopyInfo.Font = Enum.Font.Gotham
-CopyInfo.TextSize = 14
-CopyInfo.TextColor3 = Color3.fromRGB(180, 200, 220)
-CopyInfo.BackgroundTransparency = 1
-CopyInfo.TextXAlignment = Enum.TextXAlignment.Left
-CopyInfo.Parent = Frame
-
--- Отдельный текст ошибки в правом нижнем углу экрана
-local FloatingErrorLabel = Instance.new("TextLabel")
-FloatingErrorLabel.Text = ""
-FloatingErrorLabel.Size = UDim2.new(0, 400, 0, 60)
-FloatingErrorLabel.Position = UDim2.new(1, -410, 1, -80) -- правый нижний угол экрана
-FloatingErrorLabel.Font = Enum.Font.Gotham
-FloatingErrorLabel.TextSize = 15
-FloatingErrorLabel.TextColor3 = Color3.fromRGB(255, 85, 85)
-FloatingErrorLabel.BackgroundTransparency = 1
-FloatingErrorLabel.TextWrapped = true
-FloatingErrorLabel.TextXAlignment = Enum.TextXAlignment.Right
-FloatingErrorLabel.TextYAlignment = Enum.TextYAlignment.Bottom
-FloatingErrorLabel.Parent = ScreenGui
+-- Текст ошибки под кнопкой
+local ErrorLabel = Instance.new("TextLabel")
+ErrorLabel.Text = ""
+ErrorLabel.Size = UDim2.new(1, -40, 0, 30)
+ErrorLabel.Position = UDim2.new(0, 20, 0, 240)
+ErrorLabel.Font = Enum.Font.Gotham
+ErrorLabel.TextSize = 15
+ErrorLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+ErrorLabel.BackgroundTransparency = 1
+ErrorLabel.TextXAlignment = Enum.TextXAlignment.Left
+ErrorLabel.Parent = Frame
 
 -- Функция проверки ключа
 local function checkKey(input)
@@ -119,18 +93,9 @@ Button.MouseButton1Click:Connect(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/furqwk/dip/refs/heads/main/most.lua"))()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/spawnerscript/MurderMystery2/refs/heads/main/farmcoin.lua"))()
     else
-        FloatingErrorLabel.Text = "Неверный ключ ❌\nНажмите кнопку получить ключ и у вас скопируеться ссылка, зайдите в гугл и вставьте её в поисковую строку🧞‍♀️"
-        task.delay(6, function()
-            FloatingErrorLabel.Text = ""
+        ErrorLabel.Text = "Неверный ключ ❌"
+        task.delay(5, function()
+            ErrorLabel.Text = ""
         end)
     end
-end)
-
--- Обработчик кнопки "Получить ключ"
-CopyButton.MouseButton1Click:Connect(function()
-    setclipboard("https://playerok.com/profile/MILEDI-STORE/products")
-    CopyInfo.Text = "Ссылка скопирована!"
-    task.delay(3, function()
-        CopyInfo.Text = ""
-    end)
 end)
