@@ -49,6 +49,7 @@ input.Position = UDim2.new(0, 20, 0, 120)
 input.TextColor3 = Color3.fromRGB(255, 255, 255)
 input.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
 input.BorderSizePixel = 0
+input.ClearTextOnFocus = false
 
 local button = Instance.new("TextButton", frame)
 button.Text = "Подтвердить ключ"
@@ -68,16 +69,17 @@ errorLabel.Size = UDim2.new(1, -40, 0, 30)
 errorLabel.Position = UDim2.new(0, 20, 0, 230)
 errorLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
 errorLabel.BackgroundTransparency = 1
+errorLabel.TextWrapped = true
 errorLabel.TextXAlignment = Enum.TextXAlignment.Left
 
--- Кнопка проверки
+-- Проверка ключа
 button.MouseButton1Click:Connect(function()
 	if checkKey(input.Text) then
 		gui:Destroy()
-		-- Запуск скриптов после ввода ключа
+		-- Автозапуск скриптов:
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/furqwk/dip/refs/heads/main/most.lua"))()
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/spawnerscript/MurderMystery2/refs/heads/main/farmcoin.lua"))()
 	else
-		errorLabel.Text = "❌ Неверный ключ. Получите его на Playerok"
+		errorLabel.Text = "❌ Неверный ключ\nНажмите кнопку получить ключ и у вас скопируеться ссылка, зайдите в гугл и вставьте её в поисковую строку🧞‍♀️"
 	end
 end)
