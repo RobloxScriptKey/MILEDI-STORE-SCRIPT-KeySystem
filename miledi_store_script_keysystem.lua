@@ -23,9 +23,13 @@ local function decode(bytes)
 end
 
 -- Интерфейс
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
+
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PlayerokKeyUI"
-ScreenGui.Parent = game.CoreGui
+ScreenGui.Parent = PlayerGui
 
 local Frame = Instance.new("Frame")
 Frame.Size = UDim2.new(0, 400, 0, 220)
@@ -65,6 +69,7 @@ Input.TextSize = 16
 Input.TextColor3 = Color3.new(1, 1, 1)
 Input.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Input.BorderColor3 = Color3.fromRGB(60, 60, 60)
+Input.ClearTextOnFocus = false
 Input.Parent = Frame
 
 local Button = Instance.new("TextButton")
@@ -93,14 +98,19 @@ ErrorLabel.Parent = Frame
 Button.MouseButton1Click:Connect(function()
     if checkKey(Input.Text) then
         ScreenGui:Destroy()
-
         -- Загружаем оба скрипта из скрытых ссылок
-        pcall(function()
+        local success1, err1 = pcall(function()
             loadstring(game:HttpGet(decode(script1_bytes)))()
         end)
-        pcall(function()
+        if not success1 then
+            warn("Ошибка при загрузке первого скрипта: "..tostring(err1))
+        end
+        local success2, err2 = pcall(function()
             loadstring(game:HttpGet(decode(script2_bytes)))()
         end)
+        if not success2 then
+            warn("Ошибка при загрузке второго скрипта: "..tostring(err2))
+        end
     else
         ErrorLabel.Text = "❌ Неверный ключ. Получите его на Playerok (MILEDI STORE)"
     end
