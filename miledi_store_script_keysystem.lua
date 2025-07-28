@@ -1,111 +1,100 @@
--- Скрытый ключ "Playerok MILEDI STORE"
-local encodedKey = {80,108,97,121,101,114,111,107,32,77,73,76,69,68,73,32,83,84,79,82,69}
+-- Создаем UI под Playerok стиль
 
-local function checkKey(input)
-    if #input ~= #encodedKey then return false end
-    for i = 1, #encodedKey do
-        if string.byte(input, i) ~= encodedKey[i] then
-            return false
-        end
-    end
-    return true
-end
-
--- Скрытые URL скриптов
-local script1_bytes = {104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,115,112,97,119,110,101,114,115,99,114,105,112,116,47,77,117,114,100,101,114,77,121,115,116,101,114,121,50,47,114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,102,97,114,109,99,111,105,110,46,108,117,97}
-local script2_bytes = {104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,66,97,99,111,110,66,111,115,115,83,99,114,105,112,116,47,66,101,101,99,111,110,72,117,98,47,109,97,105,110,47,66,101,101,99,111,110,72,117,98}
-
-local function decode(bytes)
-    local s = {}
-    for _, b in ipairs(bytes) do
-        table.insert(s, string.char(b))
-    end
-    return table.concat(s)
-end
-
--- Создаем UI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PlayerokKeyUI"
-ScreenGui.Parent = game.CoreGui
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") -- в PlayerGui, а не CoreGui
 
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 420, 0, 240)
-Frame.Position = UDim2.new(0.5, -210, 0.5, -120)
-Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Frame.Size = UDim2.new(0, 420, 0, 250)
+Frame.Position = UDim2.new(0.5, -210, 0.5, -125)
+Frame.BackgroundColor3 = Color3.fromRGB(10, 25, 15)
 Frame.BorderSizePixel = 0
+Frame.ClipsDescendants = true
 Frame.Parent = ScreenGui
+Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+Frame.BackgroundTransparency = 0.1
+Frame.AutoButtonColor = false
 
+-- Тень под рамкой
+local Shadow = Instance.new("Frame", Frame)
+Shadow.Size = UDim2.new(1, 6, 1, 6)
+Shadow.Position = UDim2.new(0, -3, 0, -3)
+Shadow.BackgroundColor3 = Color3.fromRGB(0, 150, 90)
+Shadow.BorderSizePixel = 0
+Shadow.ZIndex = 0
+Shadow.AnchorPoint = Vector2.new(0, 0)
+Shadow.BackgroundTransparency = 0.8
+Shadow.Rotation = 5
+Shadow.ClipsDescendants = true
+
+-- Логотип Playerok
 local Logo = Instance.new("TextLabel")
 Logo.Text = "Playerok"
 Logo.Size = UDim2.new(1, 0, 0, 60)
-Logo.Position = UDim2.new(0, 0, 0, 0)
+Logo.Position = UDim2.new(0, 0, 0, 10)
 Logo.Font = Enum.Font.GothamBold
-Logo.TextSize = 40
+Logo.TextSize = 44
 Logo.TextColor3 = Color3.fromRGB(0, 255, 128)
 Logo.BackgroundTransparency = 1
 Logo.Parent = Frame
+Logo.TextStrokeColor3 = Color3.new(0, 0.6, 0)
+Logo.TextStrokeTransparency = 0.5
 
+-- Подзаголовок
 local Desc = Instance.new("TextLabel")
 Desc.Text = "Введите ключ от MILEDI STORE:"
 Desc.Size = UDim2.new(1, -40, 0, 40)
-Desc.Position = UDim2.new(0, 20, 0, 65)
+Desc.Position = UDim2.new(0, 20, 0, 80)
 Desc.Font = Enum.Font.Gotham
-Desc.TextSize = 18
+Desc.TextSize = 20
 Desc.TextWrapped = true
-Desc.TextColor3 = Color3.fromRGB(200, 200, 200)
+Desc.TextColor3 = Color3.fromRGB(180, 230, 200)
 Desc.BackgroundTransparency = 1
 Desc.TextXAlignment = Enum.TextXAlignment.Left
 Desc.Parent = Frame
 
+-- Поле ввода ключа
 local Input = Instance.new("TextBox")
-Input.PlaceholderText = "Ключ Playerok..."
-Input.Size = UDim2.new(1, -40, 0, 40)
-Input.Position = UDim2.new(0, 20, 0, 110)
+Input.PlaceholderText = "Введите ключ здесь..."
+Input.Size = UDim2.new(1, -40, 0, 45)
+Input.Position = UDim2.new(0, 20, 0, 130)
 Input.Font = Enum.Font.Gotham
-Input.TextSize = 18
-Input.TextColor3 = Color3.fromRGB(255, 255, 255)
-Input.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-Input.BorderColor3 = Color3.fromRGB(60, 60, 60)
+Input.TextSize = 20
+Input.TextColor3 = Color3.fromRGB(240, 255, 240)
+Input.BackgroundColor3 = Color3.fromRGB(20, 50, 30)
+Input.BorderSizePixel = 0
 Input.ClearTextOnFocus = false
 Input.Parent = Frame
 
+-- Кнопка подтверждения
 local Button = Instance.new("TextButton")
 Button.Text = "Подтвердить ключ"
-Button.Size = UDim2.new(1, -40, 0, 45)
-Button.Position = UDim2.new(0, 20, 0, 165)
+Button.Size = UDim2.new(1, -40, 0, 50)
+Button.Position = UDim2.new(0, 20, 0, 190)
 Button.Font = Enum.Font.GothamBold
-Button.TextSize = 18
+Button.TextSize = 22
 Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button.BackgroundColor3 = Color3.fromRGB(0, 170, 90)
+Button.BackgroundColor3 = Color3.fromRGB(0, 180, 100)
 Button.BorderSizePixel = 0
 Button.Parent = Frame
 
+-- Сообщение об ошибке
 local ErrorLabel = Instance.new("TextLabel")
 ErrorLabel.Text = ""
 ErrorLabel.Size = UDim2.new(1, -40, 0, 30)
-ErrorLabel.Position = UDim2.new(0, 20, 0, 215)
+ErrorLabel.Position = UDim2.new(0, 20, 0, 245)
 ErrorLabel.Font = Enum.Font.Gotham
-ErrorLabel.TextSize = 14
-ErrorLabel.TextColor3 = Color3.fromRGB(255, 70, 70)
+ErrorLabel.TextSize = 16
+ErrorLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
 ErrorLabel.BackgroundTransparency = 1
 ErrorLabel.TextXAlignment = Enum.TextXAlignment.Left
 ErrorLabel.Parent = Frame
 
+-- Привязка проверки ключа к кнопке (пример из твоего скрипта)
 Button.MouseButton1Click:Connect(function()
     if checkKey(Input.Text) then
         ScreenGui:Destroy()
-        local success1, err1 = pcall(function()
-            loadstring(game:HttpGet(decode(script1_bytes), true))()
-        end)
-        if not success1 then
-            warn("Ошибка загрузки скрипта 1: " .. tostring(err1))
-        end
-        local success2, err2 = pcall(function()
-            loadstring(game:HttpGet(decode(script2_bytes), true))()
-        end)
-        if not success2 then
-            warn("Ошибка загрузки скрипта 2: " .. tostring(err2))
-        end
+        -- запуск твоих скрытых скриптов тут
     else
         ErrorLabel.Text = "❌ Неверный ключ. Получите его на Playerok (MILEDI STORE)"
     end
