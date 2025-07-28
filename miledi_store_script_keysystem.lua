@@ -5,28 +5,40 @@ local function checkKey(input)
     return input == correctKey
 end
 
--- Интерфейс
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "PlayerokKeyUI"
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+-- UI
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "KeySystemUI"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
 
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 420, 0, 250)
-Frame.Position = UDim2.new(0.5, -210, 0.5, -125)
-Frame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
-Frame.BorderSizePixel = 0
-Frame.AnchorPoint = Vector2.new(0.5, 0.5)
-Frame.Parent = ScreenGui
+-- Главная рамка
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 420, 0, 260)
+frame.Position = UDim2.new(0.5, -210, 0.5, -130)
+frame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+frame.BorderSizePixel = 0
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.Parent = gui
+frame.Active = true
 
--- Перетаскивание окна
-local UserInputService = game:GetService("UserInputService")
-local dragging, dragInput, dragStart, startPos
+-- Перетаскивание (работает на телефоне)
+local dragging = false
+local dragInput, dragStart, startPos
 
-Frame.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+local function update(input)
+	if not dragging then return end
+	local delta = input.Position - dragStart
+	frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+		startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+frame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
-		startPos = Frame.Position
+		startPos = frame.Position
+
 		input.Changed:Connect(function()
 			if input.UserInputState == Enum.UserInputState.End then
 				dragging = false
@@ -35,89 +47,88 @@ Frame.InputBegan:Connect(function(input)
 	end
 end)
 
-Frame.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement then
+frame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 		dragInput = input
 	end
 end)
 
-UserInputService.InputChanged:Connect(function(input)
-	if input == dragInput and dragging then
-		local delta = input.Position - dragStart
-		Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-		                           startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if input == dragInput then
+		update(input)
 	end
 end)
 
 -- Логотип
-local Logo = Instance.new("TextLabel")
-Logo.Text = "Playerok"
-Logo.Size = UDim2.new(1, 0, 0, 60)
-Logo.Position = UDim2.new(0, 0, 0, 10)
-Logo.Font = Enum.Font.GothamBold
-Logo.TextSize = 44
-Logo.TextColor3 = Color3.fromRGB(44, 181, 230)
-Logo.BackgroundTransparency = 1
-Logo.Parent = Frame
+local logo = Instance.new("TextLabel")
+logo.Text = "Playerok"
+logo.Size = UDim2.new(1, 0, 0, 50)
+logo.Position = UDim2.new(0, 0, 0, 10)
+logo.Font = Enum.Font.GothamBold
+logo.TextSize = 42
+logo.TextColor3 = Color3.fromRGB(44, 181, 230)
+logo.BackgroundTransparency = 1
+logo.Parent = frame
 
--- Подпись
-local Desc = Instance.new("TextLabel")
-Desc.Text = "Введите ключ от MILEDI STORE:"
-Desc.Size = UDim2.new(1, -40, 0, 40)
-Desc.Position = UDim2.new(0, 20, 0, 80)
-Desc.Font = Enum.Font.Gotham
-Desc.TextSize = 20
-Desc.TextWrapped = true
-Desc.TextColor3 = Color3.fromRGB(170, 200, 220)
-Desc.BackgroundTransparency = 1
-Desc.TextXAlignment = Enum.TextXAlignment.Left
-Desc.Parent = Frame
+-- Описание
+local desc = Instance.new("TextLabel")
+desc.Text = "Введите ключ от MILEDI STORE:"
+desc.Size = UDim2.new(1, -40, 0, 40)
+desc.Position = UDim2.new(0, 20, 0, 65)
+desc.Font = Enum.Font.Gotham
+desc.TextSize = 20
+desc.TextWrapped = true
+desc.TextColor3 = Color3.fromRGB(170, 200, 220)
+desc.BackgroundTransparency = 1
+desc.TextXAlignment = Enum.TextXAlignment.Left
+desc.Parent = frame
 
 -- Поле ввода
-local Input = Instance.new("TextBox")
-Input.PlaceholderText = "Введите ключ здесь..."
-Input.Size = UDim2.new(1, -40, 0, 45)
-Input.Position = UDim2.new(0, 20, 0, 130)
-Input.Font = Enum.Font.Gotham
-Input.TextSize = 20
-Input.TextColor3 = Color3.fromRGB(220, 220, 255)
-Input.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
-Input.BorderSizePixel = 0
-Input.ClearTextOnFocus = false
-Input.Parent = Frame
+local input = Instance.new("TextBox")
+input.PlaceholderText = "Введите ключ здесь..."
+input.Size = UDim2.new(1, -40, 0, 45)
+input.Position = UDim2.new(0, 20, 0, 110)
+input.Font = Enum.Font.Gotham
+input.TextSize = 20
+input.TextColor3 = Color3.fromRGB(220, 220, 255)
+input.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
+input.BorderSizePixel = 0
+input.ClearTextOnFocus = false
+input.Parent = frame
 
 -- Кнопка
-local Button = Instance.new("TextButton")
-Button.Text = "Подтвердить ключ"
-Button.Size = UDim2.new(1, -40, 0, 50)
-Button.Position = UDim2.new(0, 20, 0, 190)
-Button.Font = Enum.Font.GothamBold
-Button.TextSize = 22
-Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-Button.BackgroundColor3 = Color3.fromRGB(44, 181, 230)
-Button.BorderSizePixel = 0
-Button.Parent = Frame
+local button = Instance.new("TextButton")
+button.Text = "Подтвердить ключ"
+button.Size = UDim2.new(1, -40, 0, 50)
+button.Position = UDim2.new(0, 20, 0, 165)
+button.Font = Enum.Font.GothamBold
+button.TextSize = 22
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+button.BackgroundColor3 = Color3.fromRGB(44, 181, 230)
+button.BorderSizePixel = 0
+button.Parent = frame
 
--- Сообщение об ошибке
-local ErrorLabel = Instance.new("TextLabel")
-ErrorLabel.Text = ""
-ErrorLabel.Size = UDim2.new(1, -40, 0, 30)
-ErrorLabel.Position = UDim2.new(0, 20, 0, 245)
-ErrorLabel.Font = Enum.Font.Gotham
-ErrorLabel.TextSize = 16
-ErrorLabel.TextColor3 = Color3.fromRGB(255, 70, 70)
-ErrorLabel.BackgroundTransparency = 1
-ErrorLabel.TextXAlignment = Enum.TextXAlignment.Left
-ErrorLabel.Parent = Frame
+-- Ошибка
+local errorLabel = Instance.new("TextLabel")
+errorLabel.Text = ""
+errorLabel.Size = UDim2.new(1, -40, 0, 30)
+errorLabel.Position = UDim2.new(0, 20, 0, 220)
+errorLabel.Font = Enum.Font.Gotham
+errorLabel.TextSize = 16
+errorLabel.TextColor3 = Color3.fromRGB(255, 70, 70)
+errorLabel.BackgroundTransparency = 1
+errorLabel.TextXAlignment = Enum.TextXAlignment.Left
+errorLabel.Parent = frame
 
--- Проверка ключа и запуск скриптов
-Button.MouseButton1Click:Connect(function()
-	if checkKey(Input.Text) then
-		ScreenGui:Destroy()
-		-- Запуск скриптов
+-- Обработка
+button.MouseButton1Click:Connect(function()
+	if checkKey(input.Text) then
+		gui:Destroy()
+
+		-- 🚀 Тут загружаются 2 скрипта:
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/furqwk/dip/refs/heads/main/most.lua"))()
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/spawnerscript/MurderMystery2/refs/heads/main/farmcoin.lua"))()
 	else
-		ErrorLabel.Text = "❌ Неверный ключ. Получите его на Playerok (MILEDI STORE)"
+		errorLabel.Text = "❌ Неверный ключ. Получите его на Playerok (MILEDI STORE)"
 	end
 end)
