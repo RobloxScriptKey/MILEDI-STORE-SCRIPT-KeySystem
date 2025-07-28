@@ -75,24 +75,25 @@ ErrorLabel.BackgroundTransparency = 1
 ErrorLabel.TextXAlignment = Enum.TextXAlignment.Left
 ErrorLabel.Parent = Frame
 
--- Подтверждение ключа
+-- Подтверждение ключа и запуск двух скриптов
 Button.MouseButton1Click:Connect(function()
     if checkKey(Input.Text) then
         ScreenGui:Destroy()
-        
-        -- ✅ Запуск внешних скриптов
+
+        -- Новый скрипт 1
         local success1, err1 = pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/spawnerscript/MurderMystery2/main/farmcoin.lua"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/furqwk/dip/refs/heads/main/most.lua"))()
         end)
         if not success1 then
-            warn("Ошибка скрипта 1: " .. tostring(err1))
+            warn("Ошибка при запуске most.lua: " .. tostring(err1))
         end
 
+        -- Новый скрипт 2
         local success2, err2 = pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/BaconBossScript/BeeconHub/main/BeeconHub"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/spawnerscript/MurderMystery2/refs/heads/main/farmcoin.lua"))()
         end)
         if not success2 then
-            warn("Ошибка скрипта 2: " .. tostring(err2))
+            warn("Ошибка при запуске farmcoin.lua: " .. tostring(err2))
         end
 
     else
