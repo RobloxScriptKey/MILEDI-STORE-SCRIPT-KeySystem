@@ -13,9 +13,9 @@ screenGui.Name = "PlayerokKeyUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
 
--- Главное окно
+-- Главное окно (увеличено по высоте)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 420, 0, 250)
+frame.Size = UDim2.new(0, 420, 0, 270)  -- было 250, стало 270
 frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
@@ -69,11 +69,11 @@ confirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 confirmButton.BackgroundColor3 = Color3.fromRGB(44, 181, 230)
 confirmButton.BorderSizePixel = 0
 
--- Кнопка "Получить ключ"
+-- Кнопка "Получить ключ" с увеличенным отступом вниз
 local getKeyButton = Instance.new("TextButton", frame)
 getKeyButton.Text = "Получить ключ"
 getKeyButton.Size = UDim2.new(0, 160, 0, 30)
-getKeyButton.Position = UDim2.new(0, 20, 1, -35)
+getKeyButton.Position = UDim2.new(0, 20, 1, -25) -- было -35, стало -25
 getKeyButton.Font = Enum.Font.Gotham
 getKeyButton.TextSize = 16
 getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
